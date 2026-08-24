@@ -1,0 +1,22 @@
+# Runtime databases and data
+/db/*.sqlite
+/db/*.sqlite3
+/db/*.db
+/db/*.db3
+/storage/files/*
+/storage/tmp/*
+/storage/*.log
+/storage/.bootstrap-error.log
+
+# Local / OS
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+.vscode/
+.idea/
+
+# Backups
+*.bak
+*.old
+*~
