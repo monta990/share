@@ -1,2 +1,0 @@
-Panel de administración: /admin
-Compatibilidad: /admin.php redirige a /admin
