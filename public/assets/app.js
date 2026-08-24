@@ -38,7 +38,6 @@ durationHours.value=String(defaultDurationHours);
 oneTime.checked=defaultOneTime;
 maxDownloads.disabled=defaultOneTime;
 maxDownloads.value=defaultOneTime?'1':String(defaultMaxDownloads);
-oneTime.dispatchEvent(new Event('change',{bubbles:true}));
 window.scrollTo({top:0,behavior:'smooth'});
 };requestAnimationFrame(()=>{requestAnimationFrame(()=>{const target=result;const headerOffset=24;const top=Math.max(0,target.getBoundingClientRect().top+window.scrollY-headerOffset);window.scrollTo({top,behavior:'smooth'});});})}
 })();

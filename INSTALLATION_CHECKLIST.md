@@ -673,6 +673,6 @@ Se corrigió un error de inicialización en `public/download.php`: `send_no_cach
 Los enlaces multiuso muestran una descripción según su configuración: un solo uso, máximo de descargas cuando existe un límite, o descargas ilimitadas cuando el límite es 0.
 
 
-### Corrección al iniciar una nueva carga
+### Visibilidad del botón Copiar secret
 
-Al pulsar **Subir otro archivo**, el estado de **Enlace de un solo uso** ahora vuelve a sincronizar explícitamente el campo **Máximo de descargas**. Esto evita que el grupo quede visualmente deshabilitado cuando el valor predeterminado de la plataforma permite modificar la cantidad con teclado.
+El botón para copiar el secret recién generado ahora usa el estilo visible del portal (`btn-outline-secondary`) en lugar de `btn-outline-dark`, que se perdía sobre el panel oscuro.

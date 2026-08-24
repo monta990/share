@@ -1211,7 +1211,7 @@ admin_layout_start('Administración',$branding,$config);
         <div class="fw-semibold mb-1"><?=e($uiLanguage==='en'?'New secret — copy it now':'Nuevo secret — cópialo ahora')?></div>
         <div class="input-group">
           <input id="newApiKey" class="form-control font-monospace" value="<?=e($newApiKey)?>" readonly>
-          <button type="button" class="btn btn-outline-dark" data-copy-value="<?=e($newApiKey)?>">
+          <button type="button" class="btn btn-outline-secondary" data-copy-value="<?=e($newApiKey)?>">
             <i class="bi bi-copy me-1"></i><?=e($uiLanguage==='en'?'Copy':'Copiar')?>
           </button>
         </div>
