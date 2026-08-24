@@ -1,0 +1,12 @@
+URL PORTABILITY
+==============
+La aplicación soporta automáticamente:
+
+https://share.dominio.com
+https://dominio.com/share
+https://dominio.com/empresa/documentos
+
+DNS: A, AAAA o CNAME.
+Apache: DocumentRoot -> public/
+
+No es necesario fijar el dominio en config.php en una instalación normal.

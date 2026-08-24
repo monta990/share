@@ -1,207 +1,171 @@
-# Portal de archivos
+# Manual de usuario — Portal de archivos
 
-Aplicación independiente de transferencia temporal de archivos para Apache + PHP + SQLite.
+## 1. ¿Qué hace el portal?
 
-## Incluye
+Portal de archivos permite subir archivos y compartirlos mediante un enlace temporal protegido por un PIN de 4 dígitos.
 
-- Subida Drag & Drop por chunks.
-- Archivos grandes (límite inicial 20 GB por archivo, configurable).
-- Expiración configurable; 72 horas por defecto.
-- PIN aleatorio de 4 dígitos.
-- El PIN se muestra una sola vez, no se consulta ni regenera.
-- El PIN se guarda solo como hash.
-- Sin bloqueo por intentos incorrectos.
-- Enlaces automáticos según el dominio/ruta donde se instala.
-- Funciona en dominio, subdominio, subcarpeta o IP.
-- Panel administrativo protegido por usuario y contraseña.
-- Configuración del nombre/texto superior.
-- Subida y cambio de logo desde administración.
-- Listado, estadísticas y eliminación de archivos desde administración.
-- Cambio de contraseña administrativa.
-- Tema claro, oscuro y automático.
-- Bootstrap 5.3.8 y Bootstrap Icons 1.13.1 por CDN.
+Cada archivo tiene:
 
-## Primera instalación
+- un enlace único;
+- un PIN aleatorio de 4 dígitos;
+- una fecha de expiración;
+- un contador de descargas.
 
-1. Apunta el DocumentRoot de Apache a `public`.
-2. Asegura permisos de escritura para `storage/`.
-3. Abre la aplicación.
-4. Entra en `/admin`.
-5. La primera vez aparecerá el asistente para crear el administrador.
-6. Después podrás configurar el logo y los textos desde el panel.
+El PIN se genera una sola vez.
 
-No necesitas escribir el dominio en `config/config.php`.
+> **El PIN no se puede volver a consultar ni regenerar.**
+> El administrador tampoco puede ver el PIN.
 
-### Ejemplos
+Si se pierde el PIN, el archivo no puede descargarse mediante ese enlace.
 
-Si se instala en:
+## 2. Subir un archivo
 
-`https://ejemplo.com/transfer/`
+1. Abra la página principal.
+2. Arrastre un archivo al área de subida o pulse **Seleccionar archivo**.
+3. Espere a que termine la carga.
+4. El portal mostrará:
+   - nombre del archivo;
+   - enlace de descarga;
+   - PIN;
+   - fecha de expiración.
+5. Use **Copiar PIN**, **Copiar enlace** o **Copiar para compartir**.
 
-los enlaces se generan como:
+El PIN debe guardarse o compartirse en ese momento.
 
-`https://ejemplo.com/transfer/f/XXXXXXXX`
+## 3. Descargar un archivo
 
-Si se instala en:
+1. Abra el enlace recibido.
+2. Introduzca el PIN de 4 dígitos.
+3. Pulse **Descargar archivo**.
 
-`https://share.ejemplo.com/`
+Un PIN incorrecto no cuenta como descarga y no existe bloqueo automático por intentos incorrectos.
 
-los enlaces se generan como:
+## 4. Temas
 
-`https://share.ejemplo.com/f/XXXXXXXX`
+El portal dispone de:
 
-Si existe un reverse proxy que modifica la URL pública, se puede fijar `base_url` manualmente en `config/config.php`.
+- Claro
+- Oscuro
+- Automático
 
-## Apache
+**Automático** sigue la preferencia de tema del sistema/navegador.
 
-DocumentRoot recomendado:
+La preferencia se conserva en el navegador.
 
-```text
-C:/Apache24/htdocs/portal/public
-```
+## 5. Administración
 
-VirtualHost de ejemplo:
-
-```apache
-<VirtualHost *:443>
-    ServerName share.ejemplo.com
-    DocumentRoot "C:/Apache24/htdocs/portal/public"
-
-    <Directory "C:/Apache24/htdocs/portal/public">
-        Options FollowSymLinks
-        AllowOverride All
-        Require all granted
-        DirectoryIndex index.php
-    </Directory>
-
-    SSLEngine on
-    SSLCertificateFile "C:/ruta/certificado/fullchain.pem"
-    SSLCertificateKeyFile "C:/ruta/certificado/private.key"
-</VirtualHost>
-```
-
-Activa `mod_rewrite`, `mod_headers` y `mod_ssl` cuando corresponda.
-
-## PHP
-
-Necesita PHP 8.2+ y al menos:
-
-- PDO SQLite
-- SQLite3
-- fileinfo
-- mbstring
-- openssl
-
-La subida usa `php://input` y chunks, por lo que el límite total del archivo no depende de un único `upload_max_filesize`.
-
-## Limpieza
-
-Programa `cron/cleanup.php` cada hora mediante cron o Windows Task Scheduler. Los archivos expirados tampoco pueden descargarse aunque el proceso de limpieza todavía no haya corrido.
-
-## Administración
-
-La URL del panel es relativa a la instalación:
+El panel está disponible en:
 
 `/admin`
 
-La primera visita permite crear un único administrador. La contraseña se guarda con `password_hash()`.
+La aplicación no depende de un dominio o subdominio concreto. Por ejemplo, puede estar instalada en la raíz o en una carpeta.
 
-Desde el panel se puede:
+La primera vez se crea el usuario y contraseña de administración.
 
-- cambiar nombre/título del portal;
-- cambiar texto secundario;
-- subir/eliminar logo;
-- cambiar contraseña;
-- ver estadísticas;
-- ver hasta 100 archivos recientes;
-- eliminar archivos manualmente.
+### Marca
 
-El panel **no muestra los PIN de los archivos** y no puede regenerarlos.
+El administrador puede cambiar:
 
-## Almacenamiento
+- nombre de la aplicación;
+- texto secundario;
+- logo.
 
-Mantén `storage/` fuera del DocumentRoot siempre que sea posible. También contiene `.htaccess` de denegación como defensa adicional.
+No es necesario modificar código.
 
-## Panel administrativo
+### Duración de enlaces
 
-El panel `/admin` permite:
+La duración global se configura directamente en **horas**.
 
-- ver total de archivos, archivos activos, descargas y almacenamiento;
-- ver el espacio físico realmente ocupado en `storage/files`;
-- buscar archivos por nombre o identificador;
-- filtrar activos, expirados o todos;
-- consultar el enlace de descarga de cada archivo y abrirlo/copiarlos;
-- consultar tamaño, fecha, expiración y cantidad de descargas;
-- detectar si el registro existe pero falta el archivo físico;
-- eliminar cualquier archivo inmediatamente, sin esperar al proceso automático;
-- eliminar todos los expirados de forma manual;
-- personalizar nombre, texto superior y logo;
-- cambiar la contraseña del administrador.
+Ejemplos:
 
-El panel nunca muestra ni permite regenerar los PIN.
+- 24 = 1 día
+- 72 = 3 días
+- 168 = 7 días
 
-## Duración global de enlaces
+El cambio se aplica también retroactivamente a los enlaces que todavía estén vigentes.
 
-La duración se configura desde el panel de administración directamente en **horas**. El valor inicial es 72 horas.
+La nueva fecha se calcula desde la fecha de creación original del archivo.
 
-Al cambiarla, el administrador puede aplicar el nuevo valor retroactivamente a todos los enlaces que todavía estén vigentes. La nueva expiración se calcula desde `created_at` de cada archivo. Los enlaces ya expirados no se reactivan.
+Los archivos que ya expiraron **no se reactivan**.
 
-Rango permitido: 1 a 8760 horas.
+### Archivos
 
-## APIs / servicios
+El administrador puede consultar:
 
-La aplicación incluye una API autenticada para que un ERP, sistema interno o servicio pueda subir un archivo y recibir **la URL y el PIN generado** en la respuesta.
+- nombre;
+- tamaño;
+- enlace;
+- fecha de creación;
+- fecha de expiración;
+- cantidad de descargas;
+- estado.
 
-### Crear una API key
+También puede:
 
-Entra al panel de administración y crea una clave con un nombre descriptivo, por ejemplo `ERP facturación`.
+- copiar el enlace;
+- abrir el enlace;
+- eliminar un archivo inmediatamente;
+- eliminar todos los archivos expirados.
 
-La clave completa se muestra **una sola vez**. El sistema guarda únicamente un hash SHA-256 de la clave. El administrador puede ver el prefijo, uso, última utilización y revocarla, pero no puede recuperar la clave completa.
+El PIN nunca aparece en esta pantalla.
 
-### Endpoint
+## 6. Secrets de API
 
-```text
-POST /api/v1/upload
-```
+El portal permite integrar un ERP, sistema de facturación, aplicación interna u otro servicio.
 
-La ruta es relativa a la instalación. Si el portal está en `/transfer`, por ejemplo, será `/transfer/api/v1/upload`.
+En `/admin`, en **APIs**, el administrador puede crear tantos secrets como necesite.
 
-Autenticación recomendada:
+> **No existe un límite artificial de cantidad de secrets.**
 
-```http
-X-API-Key: pf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-```
+Cada secret tiene:
 
-También se acepta:
+- nombre identificativo;
+- prefijo visible;
+- estado;
+- número de peticiones;
+- última utilización.
 
-```http
-Authorization: Bearer pf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-```
+El secret completo se muestra **una sola vez**, inmediatamente después de crearlo.
 
-### Opción A: multipart/form-data
+Después no se puede recuperar desde el panel.
 
-Campo requerido: `file`.
+Si se pierde, se debe crear un nuevo secret.
 
-Ejemplo con curl:
+### Revocar
+
+Revocar un secret lo deja inutilizable, pero conserva su registro para auditoría.
+
+### Eliminar
+
+El administrador puede eliminar permanentemente un secret.
+
+Eliminar un secret **no elimina los archivos que fueron subidos con él**.
+
+## 7. APIs
+
+Endpoint:
+
+`POST /api/v1/upload`
+
+El endpoint acepta:
+
+- `X-API-Key: SECRET`
+- o `Authorization: Bearer SECRET`
+
+### Multipart
+
+Ejemplo:
 
 ```bash
-curl -X POST \
-  -H "X-API-Key: pf_TU_CLAVE" \
-  -F "file=@C:/documentos/factura.pdf" \
-  "https://tu-servidor/transfer/api/v1/upload"
+curl -X POST   -H "X-API-Key: pf_TU_SECRET"   -F "file=@factura.pdf"   "https://tu-servidor/api/v1/upload"
 ```
 
-### Opción B: cuerpo binario
+### Binario
 
-Para integraciones que prefieren enviar el archivo directamente:
+También puede enviarse el archivo directamente:
 
 ```bash
-curl -X POST \
-  -H "X-API-Key: pf_TU_CLAVE" \
-  -H "X-Filename: factura.pdf" \
-  -H "Content-Type: application/pdf" \
-  --data-binary "@C:/documentos/factura.pdf" \
-  "https://tu-servidor/transfer/api/v1/upload"
+curl -X POST   -H "X-API-Key: pf_TU_SECRET"   -H "X-Filename: factura.pdf"   -H "Content-Type: application/pdf"   --data-binary "@factura.pdf"   "https://tu-servidor/api/v1/upload"
 ```
 
 ### Respuesta
@@ -214,7 +178,7 @@ curl -X POST \
     "id": 123,
     "filename": "factura.pdf",
     "size": 245760,
-    "url": "https://tu-servidor/transfer/f/a82kd91x...",
+    "url": "https://tu-servidor/f/abc123",
     "pin": "7392",
     "expires_at": "2026-08-25T09:30:00-06:00",
     "expires_at_local": "25/08/2026 09:30"
@@ -222,67 +186,145 @@ curl -X POST \
 }
 ```
 
-**El PIN se devuelve en esta respuesta porque es el momento de creación. No existe otro endpoint para consultarlo o regenerarlo.** Si el ERP no guarda la respuesta, el PIN se pierde igual que en una subida manual.
+El ERP debe guardar la `url` y el `pin` de la respuesta.
 
-### Errores
+### Autenticación
 
-La API devuelve JSON y códigos HTTP adecuados:
-
-- `201` archivo creado
-- `400` solicitud/archivo inválido
-- `401` API key ausente, inválida o revocada
-- `405` método incorrecto
-- `413` archivo demasiado grande
-- `422` datos inválidos
-- `500` error interno de almacenamiento
-
-### Duración
-
-La API usa exactamente la **duración global configurada en el panel de administración**. Si el administrador cambia la duración global, los archivos creados por API también respetan la nueva configuración para futuras cargas y el cambio retroactivo se aplica a los enlaces vigentes igual que a las cargas manuales.
-
-### Seguridad de API
-
-- Las APIs no se guardan en texto plano.
-- Se puede revocar una key desde administración inmediatamente.
-- No se muestra el PIN en administración.
-- No hay endpoint para recuperar PIN.
-- No hay bloqueo por intentos de PIN, según el diseño solicitado.
-- Usa siempre HTTPS en producción.
-- Guarda la API key únicamente como secreto del ERP/servicio.
-
-
-## Rutas públicas
-
-El enlace de archivo (`/f/<id>`) mantiene la marca, logo y selector de tema, y el nombre de la cabecera enlaza siempre a la raíz del portal. La preferencia de tema usa la clave `portal-theme` y se aplica antes de cargar Bootstrap para evitar parpadeos y respetar claro/oscuro/automático.
-
-
-## Secrets de API
-
-Desde `/admin` se pueden crear **tantos secrets como se necesiten** para ERP y otros servicios. No existe un límite artificial de cantidad ni rate limiting implementado por la aplicación.
-
-El secret completo se muestra una sola vez. Se guarda en SQLite únicamente como SHA-256. Los secrets aparecen listados en administración y pueden revocarse o eliminarse permanentemente.
-
-Endpoint:
-
-```text
-POST /api/v1/upload
-```
-
-Autenticación:
+Ejemplo:
 
 ```http
-X-API-Key: pf_TU_SECRET
+X-API-Key: pf_xxxxxxxxxxxxxxxxx
 ```
 
 o:
 
 ```http
-Authorization: Bearer pf_TU_SECRET
+Authorization: Bearer pf_xxxxxxxxxxxxxxxxx
 ```
 
-El manual completo está en `MANUAL_USUARIO.md`.
+No envíe el secret en la URL.
 
-Importante: el endpoint debe cargar `app/api.php`; el paquete ya lo incluye.
+### Sin límite de secrets ni rate limit de aplicación
+
+La aplicación no establece un límite artificial de cantidad de secrets y no implementa bloqueo/rate limiting de las APIs.
+
+Los límites físicos siguen dependiendo del servidor, PHP, Apache, disco y configuración de tamaño máximo de archivo.
+
+## 8. Seguridad de los secrets
+
+Los secrets completos no se guardan en SQLite.
+
+La base de datos conserva únicamente un hash SHA-256 y datos de auditoría como:
+
+- prefijo;
+- nombre;
+- fecha de creación;
+- última utilización;
+- contador de peticiones;
+- estado.
+
+Por eso el administrador no puede recuperar un secret perdido.
+
+## 9. PIN de archivos
+
+Los PIN se almacenan mediante hash.
+
+No se muestran en:
+
+- panel administrativo;
+- SQLite;
+- API de consulta;
+- enlaces;
+- registros normales.
+
+El PIN solamente aparece en el momento de creación del archivo, ya sea mediante la interfaz web o en la respuesta de subida de la API.
+
+## 10. Expiración y limpieza
+
+Cuando un archivo supera su duración:
+
+- deja de poder descargarse;
+- el enlace deja de ser válido;
+- el proceso de limpieza puede eliminar su archivo físico y registro SQLite.
+
+La tarea `cron/cleanup.php` debe ejecutarse periódicamente.
+
+El administrador también puede eliminar manualmente archivos sin esperar a la tarea automática.
+
+## 11. Instalación
+
+El DocumentRoot recomendado de Apache es la carpeta:
+
+`public/`
+
+El resto del proyecto debe quedar fuera del DocumentRoot.
+
+Se requieren PHP 8.2+ y las extensiones:
+
+- PDO SQLite
+- SQLite3
+- OpenSSL
+- mbstring
+- fileinfo
+
+Consulte `README.md` para la configuración de Apache y permisos.
+
+
+## Instalación del dominio, DNS y Apache
+
+Para que el portal funcione correctamente, el dominio o subdominio que utilizarán los usuarios debe apuntar mediante la configuración de DNS al servidor donde está instalado el portal. Puede utilizarse cualquiera de estas opciones, según el proveedor DNS:
+
+- **Registro A:** apunta el dominio/subdominio a la dirección IPv4 del servidor.
+- **Registro AAAA:** apunta el dominio/subdominio a la dirección IPv6 del servidor.
+- **Registro CNAME:** apunta el dominio/subdominio a otro nombre de host que finalmente resuelva al servidor.
+
+### DocumentRoot de Apache
+
+El dominio o subdominio debe configurarse en Apache para que su **DocumentRoot apunte específicamente a la carpeta `public` del proyecto**.
+
+Ejemplo:
+
+```text
+/var/www/portal-archivos/public
+```
+
+La estructura del proyecto es similar a:
+
+```text
+portal-archivos/
+├── app/
+├── config/
+├── cron/
+├── public/          <-- DocumentRoot de Apache
+│   ├── index.php
+│   ├── admin/
+│   ├── api/
+│   └── ...
+├── storage/
+├── MANUAL_USUARIO.md
+└── README.md
+```
+
+**No se debe utilizar la carpeta raíz del proyecto como DocumentRoot.** Esto evita que `app`, `config` y `storage` queden expuestos directamente por la web.
+
+Ejemplo conceptual de VirtualHost:
+
+```apache
+<VirtualHost *:443>
+    ServerName share.ejemplo.com
+    DocumentRoot /var/www/portal-archivos/public
+
+    <Directory /var/www/portal-archivos/public>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+```
+
+El nombre `share.ejemplo.com` es solamente un ejemplo. El portal es portable y puede utilizar cualquier dominio o subdominio permitido por el proveedor.
+
+Después de configurar DNS y Apache, la aplicación detectará automáticamente el dominio, protocolo y ruta de instalación para generar los enlaces de los archivos.
+
 
 
 ### Tema automático
@@ -291,24 +333,78 @@ La opción **Automático** sigue la preferencia de tema configurada en el sistem
 
 La preferencia elegida se guarda localmente en el navegador. Las opciones disponibles son **Claro**, **Oscuro** y **Automático**.
 
-## Portabilidad de URL
+## URLs y ubicación de instalación
 
-La aplicación **no está ligada a un dominio o subdominio concreto**. Puede publicarse mediante un registro DNS A, AAAA o CNAME y funcionar tanto en un subdominio como en una ruta de un dominio existente.
+El portal es independiente del tipo de URL y de la ubicación física de la carpeta del proyecto.
 
-Ejemplos:
+Puede publicarse, por ejemplo, como una carpeta:
 
-- `https://share.dominio.com`
-- `https://dominio.com/share`
-- `https://dominio.com/empresa/documentos`
+```text
+https://dominio.com/share
+```
 
-La detección automática utiliza la URL pública de la solicitud. La configuración `base_url` queda vacía por defecto y solo debe fijarse manualmente cuando exista un proxy inverso o una topología que requiera una URL canónica explícita.
+usando un registro DNS **A, AAAA o CNAME** para el dominio correspondiente, o como un subdominio:
 
-El `DocumentRoot` de Apache debe apuntar a `public/`; la ubicación física del proyecto fuera de esa carpeta puede ser cualquiera que tenga permisos adecuados para PHP.
+```text
+https://share.dominio.com
+```
+
+El sistema detecta automáticamente el protocolo, host y prefijo de ruta utilizado por el usuario para construir los enlaces de archivos, administración y recursos.
+
+La ubicación física del proyecto tampoco tiene que coincidir con el nombre o estructura de la URL. Por ejemplo, el proyecto puede estar físicamente en:
+
+```text
+/var/www/mi-aplicacion/
+```
+
+y Apache puede publicar únicamente:
+
+```text
+/var/www/mi-aplicacion/public
+```
+
+No se deben crear rutas absolutas en PHP, JavaScript o HTML basadas en un dominio específico. La aplicación está preparada para generar las URLs a partir de la solicitud actual.
+
+### Ejemplos soportados
+
+```text
+https://share.dominio.com/
+https://share.dominio.com/f/ABC123
+https://share.dominio.com/admin
+```
+
+```text
+https://dominio.com/share/
+https://dominio.com/share/f/ABC123
+https://dominio.com/share/admin
+```
+
+```text
+https://dominio.com/empresa/documentos/
+https://dominio.com/empresa/documentos/f/ABC123
+https://dominio.com/empresa/documentos/admin
+```
 
 
-### Plantilla de compartir
+## Plantilla para compartir
 
-La plantilla de **Copiar para compartir** es configurable desde el panel `/admin`. Las APIs pueden sobreescribirla por una subida; si no envían `share_template`/`X-Share-Template`, se utiliza la plantilla global.
+Desde `/admin` puedes configurar la plantilla que se utiliza al pulsar **Copiar para compartir**. La plantilla se aplica también a las subidas realizadas por la interfaz web.
+
+Variables disponibles:
+
+```text
+{filename}       Nombre del archivo
+{url}            URL de descarga
+{pin}            PIN de descarga
+{expires_at}     Fecha de expiración en formato local
+{expires_at_iso} Fecha de expiración ISO 8601
+{duration}       Duración configurada, por ejemplo 72 horas
+{duration_hours} Duración numérica en horas
+```
+
+La plantilla es global. Una API puede enviar una plantilla específica para una sola subida; si no la envía, se utiliza la plantilla configurada en el panel.
+
+Cambiar la plantilla no cambia los archivos ni sus enlaces: únicamente modifica el texto generado para compartir.
 
 
 ## Plantilla para compartir
@@ -440,19 +536,8 @@ La pestaña **Logs** del administrador registra eventos relevantes de seguridad 
 
 La retención predeterminada es de 180 días y el máximo de 100000 eventos. Los logs son accesibles únicamente a administradores y el acceso a la propia pestaña se registra.
 
-### Base de datos de logs separada
+### Logs separados de la base principal
 
-Los logs de auditoría se almacenan en una base SQLite independiente:
-
-```text
-```
-
-La base principal de la aplicación permanece separada:
-
-```text
-```
-
-Esto permite respaldar, rotar, conservar o restaurar los logs sin modificar la base operativa principal. Los logs no son accesibles directamente desde la web.
 
 ### v1.7.23 — Idiomas
 
@@ -513,15 +598,42 @@ Cada secret de API tiene su propio límite configurable de cargas por hora.
 - `GET /api/v1/files/{id}` para consultar metadatos.
 - `DELETE /api/v1/files/{id}` para eliminar un archivo, sujeto a `files.delete`.
 
+## Funciones avanzadas
 
-## v1.7.30 — Optimización SQLite
+### SHA-256
+Después de una carga, el portal muestra la huella SHA-256 y permite copiarla.
 
-La plataforma incluye mantenimiento explícito de sus dos bases SQLite:
+### Política de descargas
+En Administración → Enlaces se configura el máximo de descargas predeterminado y el modo de un solo uso.
+
+### APIs
+Cada secret permite scopes independientes, límite de cargas por hora y cuotas diarias de archivos/GB. Los límites pueden modificarse posteriormente.
+
+### Salud
+Administración → Salud muestra el estado de PHP, SQLite, almacenamiento, logs, HTTPS, espacio disponible y ejecución de limpieza.
+
+### Estadísticas
+Administración → Estadísticas muestra actividad de cargas, descargas y uso por API.
 
 
-Desde **Administración → Salud** se puede ejecutar **Optimizar bases de datos**. La operación ejecuta `PRAGMA optimize`, `VACUUM` y una comprobación `PRAGMA integrity_check` sobre ambas bases.
+## Optimización de bases de datos
 
-`PRAGMA optimize` está recomendado por la documentación oficial de SQLite para mantenimiento de estadísticas del planificador; `VACUUM` reconstruye la base y recupera espacio libre. La operación puede requerir espacio temporal adicional y no debe ejecutarse mientras exista otra operación SQLite incompatible. citeturn699494search0turn699494search1
+En **Administración → Salud** encontrarás **Optimizar bases de datos**.
+
+La acción trabaja sobre las dos bases independientes:
+
+```text
+```
+
+Realiza:
+
+1. `PRAGMA optimize`.
+2. `VACUUM`.
+3. `PRAGMA integrity_check`.
+
+La operación puede tardar dependiendo del tamaño de las bases y del almacenamiento disponible. SQLite puede requerir espacio temporal adicional durante `VACUUM`. citeturn699494search0turn699494search1
+
+La pantalla muestra si la optimización y la comprobación terminaron correctamente.
 
 ### v1.7.31 — Responsive UI
 
@@ -1216,8 +1328,3 @@ Comportamiento:
 Se reparó la estructura HTML de **Estadísticas**. Una build anterior había insertado el contenido de Estadísticas dentro del formulario de contraseña de Seguridad, dejando el panel vacío.
 
 Se restaura la estructura funcional de Seguridad + Estadísticas y se mantiene la distribución de los indicadores de Estadísticas en cuatro columnas. Salud conserva sus cuatro columnas y el controlador aislado de Enlace de un solo uso se mantiene en la portada.
-
-
-## v1.0.0 — Production release candidate
-
-Release candidate for production deployment. Runtime databases, uploaded files, temporary files, and diagnostic logs are intentionally excluded from version control; create them on the server during installation.
