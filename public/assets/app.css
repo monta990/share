@@ -1,0 +1,688 @@
+:root{--cy-radius:1.25rem}
+body{min-height:100vh;background:radial-gradient(circle at 50% -10%,rgba(13,110,253,.10),transparent 35%),var(--bs-body-bg)}
+.navbar{background:color-mix(in srgb,var(--bs-body-bg) 92%,transparent);backdrop-filter:blur(10px)}
+.brand-icon,.hero-icon{display:inline-flex;align-items:center;justify-content:center;border-radius:1rem}
+.brand-icon{width:36px;height:36px;color:var(--bs-primary);background:rgba(13,110,253,.10)}
+.hero-icon{width:78px;height:78px;color:var(--bs-primary);background:rgba(13,110,253,.10);font-size:2.25rem}
+.upload-card{border-radius:var(--cy-radius);background:color-mix(in srgb,var(--bs-body-bg) 96%,var(--bs-primary) 4%)}
+.drop-zone{border:2px dashed var(--bs-border-color);border-radius:var(--cy-radius);padding:3.5rem 1.5rem;transition:.18s ease;cursor:pointer}
+.drop-zone:hover,.drop-zone:focus,.drop-zone.dragover{border-color:var(--bs-primary);background:rgba(13,110,253,.06);outline:none}
+.feature-box{height:100%;padding:1.25rem;border:1px solid var(--bs-border-color);border-radius:1rem;background:var(--bs-body-bg)}
+.feature-box i{display:block;font-size:1.5rem;color:var(--bs-primary);margin-bottom:.5rem}
+.feature-box strong,.feature-box span{display:block}.feature-box span{font-size:.875rem;color:var(--bs-secondary-color);margin-top:.25rem}
+.pin-display{letter-spacing:.35em;font-variant-numeric:tabular-nums;font-weight:800;font-size:clamp(2rem,8vw,3.5rem)}
+.share-box{background:var(--bs-tertiary-bg);border:1px solid var(--bs-border-color);border-radius:1rem}
+.expiry-note{border-left:4px solid var(--bs-warning)}
+@media(max-width:576px){.drop-zone{padding:2.5rem 1rem}}
+
+.brand-logo { max-height: 38px; max-width: 180px; width: auto; object-fit: contain; }
+.admin-logo { max-height: 90px; max-width: 280px; object-fit: contain; border: 1px solid var(--bs-border-color); border-radius: .75rem; padding: .5rem; background: var(--bs-body-bg); }
+.stat { padding: 1.25rem; border: 1px solid var(--bs-border-color); border-radius: 1rem; background: var(--bs-body-bg); }
+.stat span, .stat strong { display:block; } .stat span { color:var(--bs-secondary-color); font-size:.875rem; } .stat strong { font-size:1.7rem; margin-top:.2rem; }
+
+
+/* Theme compatibility: Bootstrap 5.3 + system preference */
+html[data-bs-theme="dark"] body { color-scheme: dark; }
+html[data-bs-theme="light"] body { color-scheme: light; }
+
+/* Admin tabs: use the full available width without an internal horizontal scrollbar */
+.admin-tabs {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: visible;
+}
+.admin-tabs .nav-tabs {
+    width: 100%;
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: .25rem;
+    border-bottom-color: var(--bs-border-color);
+    overflow: visible;
+    margin-left: 0;
+    margin-right: 0;
+}
+.admin-tabs .nav-item {
+    min-width: 0;
+}
+.admin-tabs .nav-link {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    color: var(--bs-secondary-color);
+    border-color: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.admin-tabs .tab-content,
+.admin-tabs .tab-pane {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: visible;
+}
+.admin-tabs .row {
+    max-width: 100%;
+    min-width: 0;
+}
+.admin-tabs .card,
+.admin-tabs .card-body {
+    max-width: 100%;
+    min-width: 0;
+}
+.admin-tabs img,
+.admin-tabs textarea,
+.admin-tabs input,
+.admin-tabs select {
+    max-width: 100%;
+}
+.admin-tabs .table-responsive {
+    max-width: 100%;
+}
+.admin-tabs .nav-link:hover {
+    color: var(--bs-body-color);
+    border-color: transparent transparent var(--bs-border-color);
+}
+.admin-tabs .nav-link.active {
+    color: var(--bs-primary);
+    background: var(--bs-body-bg);
+    border-color: var(--bs-border-color) var(--bs-border-color) var(--bs-body-bg);
+}
+.admin-tabs .tab-content { min-height: 240px; }
+.admin-tabs .card { height: 100%; }
+
+@media (max-width: 991.98px) {
+    .admin-tabs .nav-tabs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+@media (max-width: 575.98px) {
+    .admin-tabs .nav-tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .admin-tabs .nav-link {
+        white-space: normal;
+        line-height: 1.2;
+        padding: .55rem .5rem;
+    }
+}
+
+/* v1.7.17 layout hardening: never create a horizontal scrollbar in admin */
+html, body { max-width: 100%; overflow-x: hidden; }
+.admin-tabs { overflow: visible; }
+.admin-tabs .row { width: 100%; margin-left: 0; margin-right: 0; }
+.admin-tabs .col,
+.admin-tabs [class*="col-"] { min-width: 0; }
+.admin-tabs .input-group,
+.admin-tabs .d-flex,
+.admin-tabs .table-responsive { max-width: 100%; min-width: 0; }
+.admin-tabs .table-responsive { overflow-x: auto; }
+.admin-tabs .card-body { overflow-wrap: anywhere; }
+
+/* Public uploader: compact proportions on desktop and mobile */
+.drop-zone { padding: 2.25rem 1.5rem; }
+.drop-zone > .bi-cloud-arrow-up.display-3 { font-size: 3.5rem; line-height: 1; }
+.drop-zone h2 { margin-top: .9rem !important; }
+.drop-zone .small { margin-top: .75rem !important; }
+@media (max-width: 576px) {
+  .drop-zone { padding: 1.75rem 1rem; }
+  .drop-zone > .bi-cloud-arrow-up.display-3 { font-size: 2.75rem; }
+}
+
+/* v1.7.18 compact public homepage for 1920x1080-class viewports */
+.public-compact {}
+.hero-icon { width: 64px; height: 64px; font-size: 1.85rem; }
+.upload-card { border-radius: 1rem; }
+.drop-zone { padding: 1.65rem 1rem; border-radius: 1rem; }
+.drop-zone .display-5 { line-height: 1; }
+.feature-box { padding: .9rem .75rem; border-radius: .9rem; }
+.feature-box i { font-size: 1.25rem; margin-bottom: .35rem; }
+.feature-box span { font-size: .8rem; margin-top: .15rem; }
+@media (min-width: 768px) {
+  main.container { padding-top: 1.25rem !important; }
+}
+@media (max-height: 900px) and (min-width: 992px) {
+  main.container { padding-top: .75rem !important; padding-bottom: .75rem !important; }
+  .hero-icon { width: 56px; height: 56px; font-size: 1.6rem; }
+  .drop-zone { padding: 1.25rem .9rem; }
+  .feature-box { padding: .7rem; }
+  footer.mt-3 { margin-top: .75rem !important; }
+}
+
+.admin-tabs .nav-tabs{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));overflow:visible;}
+.admin-tabs .nav-tabs .nav-item{min-width:0;}
+.admin-tabs .nav-tabs .nav-link{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+@media (max-width:992px){.admin-tabs .nav-tabs{grid-template-columns:repeat(4,minmax(0,1fr));}}
+@media (max-width:576px){.admin-tabs .nav-tabs{grid-template-columns:repeat(2,minmax(0,1fr));}}
+
+.admin-tabs .nav-tabs {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0;
+    overflow: hidden;
+}
+.admin-tabs .nav-tabs .nav-item {
+    flex: 1 1 0;
+    min-width: 0;
+}
+.admin-tabs .nav-tabs .nav-link {
+    width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: center;
+    padding-left: .6rem;
+    padding-right: .6rem;
+}
+@media (max-width: 900px) {
+    .admin-tabs .nav-tabs { overflow-x: auto; scrollbar-width: thin; }
+    .admin-tabs .nav-tabs .nav-item { flex: 0 0 auto; min-width: 120px; }
+}
+
+/* v1.7.24 full-width admin */
+.admin-page{width:100%;max-width:none;margin:0;}
+.admin-page .admin-tabs,.admin-page .tab-content{width:100%;max-width:none;}
+@media (min-width:1400px){.admin-page{padding-left:2rem!important;padding-right:2rem!important;}}
+@media (min-width:2200px){.admin-page{padding-left:3rem!important;padding-right:3rem!important;}}
+
+/* Full-width admin tabs: use viewport width without horizontal scrolling. */
+.admin-tabs .nav-tabs{
+  display:grid;
+  grid-template-columns:repeat(9,minmax(0,1fr));
+  gap:.15rem;
+  overflow:visible;
+  width:100%;
+}
+.admin-tabs .nav-item,
+.admin-tabs .nav-link{min-width:0;width:100%;}
+.admin-tabs .nav-link{text-align:center;white-space:nowrap;}
+@media (max-width:1400px){
+  .admin-tabs .nav-tabs{grid-template-columns:repeat(5,minmax(0,1fr));}
+}
+@media (max-width:900px){
+  .admin-tabs .nav-tabs{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .admin-tabs .nav-link{white-space:normal;}
+}
+@media (max-width:600px){
+  .admin-tabs .nav-tabs{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+
+/* v1.7.31 — Responsive shell and tab system */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  min-width: 0;
+}
+
+.admin-page {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  padding-left: clamp(.75rem, 2vw, 2.5rem) !important;
+  padding-right: clamp(.75rem, 2vw, 2.5rem) !important;
+}
+
+.admin-tabs,
+.admin-tabs .tab-content,
+.admin-tabs .tab-pane,
+.admin-tabs .row,
+.admin-tabs .card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.admin-tabs .tab-pane {
+  display: none !important;
+  overflow: visible;
+}
+
+.admin-tabs .tab-pane.is-active {
+  display: block !important;
+}
+
+.admin-tabs .nav-tabs {
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: .15rem;
+  margin-bottom: 1.25rem !important;
+  border-bottom: 1px solid var(--bs-border-color);
+  overflow: visible !important;
+}
+
+.admin-tabs .nav-tabs .nav-item,
+.admin-tabs .nav-tabs .nav-link {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.admin-tabs .nav-tabs .nav-link {
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .15rem;
+}
+
+.admin-tabs .nav-tabs .nav-link.active {
+  color: var(--bs-primary);
+  background: var(--bs-body-bg);
+  border-color: var(--bs-border-color) var(--bs-border-color) var(--bs-body-bg);
+}
+
+.admin-tabs .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.admin-tabs [class*="col-"] {
+  min-width: 0;
+}
+
+.admin-tabs .input-group,
+.admin-tabs .table-responsive,
+.admin-tabs .form-control,
+.admin-tabs .form-select,
+.admin-tabs textarea,
+.admin-tabs input,
+.admin-tabs select {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.admin-tabs .table-responsive {
+  overflow-x: auto;
+}
+
+.admin-tabs .modal {
+  --bs-modal-width: min(96vw, 900px);
+}
+
+@media (max-width: 1399.98px) {
+  .admin-tabs .nav-tabs {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 991.98px) {
+  .admin-tabs .nav-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .admin-tabs .nav-tabs .nav-link {
+    white-space: normal;
+    line-height: 1.15;
+    padding: .6rem .45rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .admin-page {
+    padding-left: .6rem !important;
+    padding-right: .6rem !important;
+  }
+  .admin-tabs .nav-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Public home: fluid at every resolution, with a comfortable readable width. */
+.public-page {
+  width: 100%;
+  min-width: 0;
+  padding-left: clamp(.6rem, 3vw, 3rem) !important;
+  padding-right: clamp(.6rem, 3vw, 3rem) !important;
+}
+
+.public-home {
+  width: 100%;
+  max-width: 1800px;
+  margin-inline: auto;
+  min-width: 0;
+}
+
+.public-home .hero-section {
+  width: 100%;
+  margin-inline: auto;
+}
+
+.public-home .upload-card,
+.public-home .features-row {
+  width: 100%;
+  max-width: 100%;
+}
+
+.public-home .upload-card .card-body {
+  padding: clamp(.7rem, 1.2vw, 1.5rem) !important;
+}
+
+.public-home .drop-zone {
+  width: 100%;
+  min-height: clamp(180px, 24vh, 320px);
+  padding: clamp(1.1rem, 2.2vw, 2.25rem) clamp(.8rem, 2vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.public-home .features-row > [class*="col-"] {
+  min-width: 0;
+}
+
+.public-home footer {
+  width: 100%;
+  margin-top: clamp(.75rem, 2vh, 1.25rem) !important;
+}
+
+@media (min-width: 1600px) {
+  .public-home {
+    max-width: 1800px;
+  }
+  .public-home .hero-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.6rem;
+  }
+  .public-home h1 {
+    font-size: clamp(2rem, 3vw, 3rem);
+  }
+}
+
+@media (max-height: 900px) and (min-width: 992px) {
+  .public-home .hero-section {
+    margin-bottom: .75rem !important;
+  }
+  .public-home .drop-zone {
+    min-height: 165px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  .public-home .feature-box {
+    padding: .65rem;
+  }
+}
+
+/* Authentication screens: full-width, centered, and mobile-safe. */
+.auth-page {
+  width: 100%;
+  min-width: 0;
+  padding: clamp(1rem, 3vw, 3rem) clamp(.6rem, 2.5vw, 2rem) !important;
+}
+
+.auth-shell {
+  width: min(100%, 560px);
+  margin-inline: auto;
+}
+
+.auth-shell .card,
+.auth-shell .card-body,
+.auth-shell form,
+.auth-shell input {
+  max-width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 1600px) {
+  .auth-shell {
+    width: min(100%, 620px);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .auth-page {
+    padding: 1rem .6rem !important;
+  }
+  .auth-shell .card-body {
+    padding: 1rem !important;
+  }
+}
+
+/* v1.7.34 — stable customization grid and tab panes */
+.customization-grid,
+.share-template-editor {
+  min-width: 0;
+}
+.share-template-editor {
+  width: 100%;
+  resize: vertical;
+}
+@media (min-width: 1200px) {
+  .customization-grid > .col-xl-6 {
+    display: flex;
+  }
+  .customization-grid > .col-xl-6 > .card {
+    width: 100%;
+  }
+}
+
+/* v1.7.35 — tab accessibility fallback */
+.admin-tabs .nav-link:focus-visible {
+  outline: 2px solid var(--bs-primary);
+  outline-offset: -2px;
+}
+.admin-tabs .tab-pane[aria-hidden="true"] { display: none !important; }
+.admin-tabs .tab-pane[aria-hidden="false"] { display: block !important; }
+
+/* v1.7.36 API permissions responsive */
+.api-scope-list .form-check { min-width: 0; }
+.api-scope-list .form-check-label { word-break: break-word; }
+
+.form-switch-lg .form-check-input{width:3.25rem;height:1.65rem;margin-top:0;cursor:pointer}
+.form-switch-lg .form-check-input:checked{background-color:#0d6efd;border-color:#0d6efd}
+
+.upload-options-card{background:var(--bs-tertiary-bg);border-color:var(--bs-border-color)!important}
+.upload-options-card .form-label{letter-spacing:.01em}
+.upload-options-card .form-check-input{width:2.5rem;height:1.35rem;margin-top:.1rem}
+.upload-options-card .input-group-text{min-width:78px;justify-content:center}
+.upload-card #dropZone{margin-top:1rem}
+.upload-card #startUploadBtn{min-width:150px}
+.upload-card #cancelUploadBtn{min-width:110px}
+@media (min-width:992px){.upload-options-card .row{--bs-gutter-x:1.25rem}}
+@media (max-width:767.98px){.upload-options-card .small.text-end{text-align:left!important}}
+
+/* v1.0.93 — Admin vertical scrolling: use document scrollbar only. */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  height: auto !important;
+  max-height: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+.admin-page,
+.admin-tabs,
+.admin-tabs .tab-content,
+.admin-tabs .tab-pane {
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: visible !important;
+}
+
+
+#maxDownloadsGroup.is-disabled{opacity:.52}
+#maxDownloadsGroup.is-disabled .form-control{cursor:not-allowed}
+#oneTime + .form-check-label{margin:0}
+
+
+/* v1.0.0 — Public home adapts to the available viewport.
+   Desktop/tablet landscape: keep the complete initial uploader inside the
+   viewport when it can fit, without creating a needless document scrollbar. */
+@media (min-width: 992px) {
+  html, body {
+    height: auto;
+    min-height: 100%;
+  }
+
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  main.public-page {
+    box-sizing: border-box;
+    min-height: calc(100vh - 57px);
+    height: auto;
+    padding-top: .5rem !important;
+    padding-bottom: .5rem !important;
+    overflow: visible;
+  }
+
+  .public-home {
+    height: auto;
+    min-height: calc(100vh - 57px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .public-home .hero-section {
+    flex: 0 0 auto;
+    margin-bottom: .5rem !important;
+  }
+
+  .public-home .hero-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.35rem;
+    margin-bottom: .35rem !important;
+  }
+
+  .public-home h1 {
+    line-height: 1.05;
+    font-size: clamp(1.8rem, 2.7vw, 2.65rem);
+  }
+
+  .public-home .hero-section .lead {
+    margin-bottom: 0 !important;
+    line-height: 1.2;
+  }
+
+  .public-home .upload-card {
+    flex: 0 0 auto;
+  }
+
+  .public-home .upload-card .card-body {
+    padding: .75rem 1rem !important;
+  }
+
+  .public-home #uploadOptions {
+    margin-bottom: .5rem !important;
+  }
+
+  .public-home .upload-options-card {
+    padding: .7rem .9rem !important;
+  }
+
+  .public-home .upload-options-card > .d-flex {
+    margin-bottom: .55rem !important;
+  }
+
+  .public-home .upload-options-card .row {
+    --bs-gutter-y: .65rem;
+  }
+
+  .public-home #dropZone {
+    margin-top: .65rem !important;
+    min-height: 0;
+    height: clamp(145px, 19vh, 205px);
+    padding: .8rem !important;
+  }
+
+  .public-home #dropZone > .bi-cloud-arrow-up {
+    font-size: 2.6rem !important;
+  }
+
+  .public-home #dropZone h2 {
+    margin-top: .35rem !important;
+    margin-bottom: .15rem !important;
+  }
+
+  .public-home #dropZone p {
+    margin-bottom: .35rem !important;
+  }
+
+  .public-home #dropZone .small {
+    margin-top: .25rem !important;
+  }
+
+  .public-home .features-row {
+    flex: 0 0 auto;
+    margin-top: .5rem !important;
+  }
+
+  .public-home .feature-box {
+    padding: .55rem .65rem;
+    min-height: 0;
+  }
+
+  .public-home .feature-box i {
+    font-size: 1.15rem;
+    margin-bottom: .2rem;
+  }
+
+  .public-home .feature-box span {
+    font-size: .75rem;
+  }
+
+  .public-home footer {
+    flex: 0 0 auto;
+    margin-top: .45rem !important;
+  }
+}
+
+/* Very short desktop viewports: keep the initial uploader compact while
+   allowing the full page to scroll when the upload result is shown. */
+@media (max-height: 760px) and (min-width: 992px) {
+  main.public-page {
+    padding-top: .25rem !important;
+    padding-bottom: .25rem !important;
+  }
+
+  .public-home .hero-section {
+    margin-bottom: .25rem !important;
+  }
+
+  .public-home .hero-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 1.15rem;
+  }
+
+  .public-home h1 {
+    font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  }
+
+  .public-home .upload-card .card-body {
+    padding: .55rem .75rem !important;
+  }
+
+  .public-home .upload-options-card {
+    padding: .55rem .7rem !important;
+  }
+
+  .public-home #dropZone {
+    height: 125px;
+    padding: .55rem !important;
+  }
+
+  .public-home #dropZone > .bi-cloud-arrow-up {
+    font-size: 2.1rem !important;
+  }
+
+  .public-home .feature-box {
+    padding: .4rem .5rem;
+  }
+}

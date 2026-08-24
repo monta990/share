@@ -1308,7 +1308,7 @@ El estado inicial de **Enlace de un solo uso** ya no depende del JavaScript para
 
 Se corrigió un error fatal que provocaba **HTTP 500 en la portada y Administración**: ambas páginas llamaban `send_no_cache_headers()` antes de cargar `app/bootstrap.php`, donde se cargan las funciones auxiliares. La llamada ahora ocurre después del bootstrap.
 
-La build parte de **v1.0.133** como base estable. El selector **Enlace de un solo uso** conserva su sincronización y añade un refuerzo al evento `click`; `app.js` se carga con `defer`.
+La build parte de **v1.0.033** como base estable. El selector **Enlace de un solo uso** conserva su sincronización y añade un refuerzo al evento `click`; `app.js` se carga con `defer`.
 
 ---
 
@@ -1328,3 +1328,43 @@ Comportamiento:
 Se reparó la estructura HTML de **Estadísticas**. Una build anterior había insertado el contenido de Estadísticas dentro del formulario de contraseña de Seguridad, dejando el panel vacío.
 
 Se restaura la estructura funcional de Seguridad + Estadísticas y se mantiene la distribución de los indicadores de Estadísticas en cuatro columnas. Salud conserva sus cuatro columnas y el controlador aislado de Enlace de un solo uso se mantiene en la portada.
+
+---
+
+## v1.0.0 — Selector de archivos corregido
+
+Se corrigió el botón **Seleccionar archivo** usando un `label` HTML asociado directamente a `fileInput`, de modo que el selector nativo funciona sin depender de `input.click()` en JavaScript.
+
+Se eliminó de la interfaz el mensaje **Archivo seleccionado**. La selección sigue habilitando **Subir archivo** y **Cancelar**, pero no añade ese bloque de texto.
+
+
+### Corrección de selector de archivos
+
+El selector nativo de archivos funciona mediante el control HTML asociado al botón **Seleccionar archivo**. Al seleccionar un archivo, **Subir archivo** y **Cancelar** se habilitan automáticamente. No se muestra ningún texto adicional de “Archivo seleccionado”.
+
+
+### Carga automática al seleccionar archivo
+
+Al seleccionar o soltar un archivo, la carga comienza automáticamente. Los botones de carga y cancelación no se muestran.
+
+### Adaptación al espacio disponible
+La página principal reduce espaciados y alturas en pantallas de escritorio para aprovechar el alto disponible y evitar una barra de desplazamiento innecesaria cuando todo el contenido puede caber en el viewport.
+
+### Corrección del desplazamiento vertical
+
+El layout compacto ya no fija la página a la altura del viewport ni utiliza `overflow: hidden`. La página conserva el ajuste compacto cuando hay espacio disponible, pero recupera el desplazamiento vertical normal cuando el resultado de una carga hace crecer el contenido.
+
+
+### Corrección de error 500 en enlaces de descarga
+
+Se corrigió un error de inicialización en `public/download.php`: `send_no_cache_headers()` se estaba ejecutando antes de cargar `app/bootstrap.php`. Esto provocaba un error fatal de PHP al abrir enlaces `/f/...`. La llamada ahora ocurre después del bootstrap.
+
+
+### Tooltip de enlaces multiuso
+
+Los enlaces multiuso muestran una descripción según su configuración: un solo uso, máximo de descargas cuando existe un límite, o descargas ilimitadas cuando el límite es 0.
+
+
+### Corrección al iniciar una nueva carga
+
+Al pulsar **Subir otro archivo**, el estado de **Enlace de un solo uso** ahora vuelve a sincronizar explícitamente el campo **Máximo de descargas**. Esto evita que el grupo quede visualmente deshabilitado cuando el valor predeterminado de la plataforma permite modificar la cantidad con teclado.
