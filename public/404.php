@@ -4,6 +4,7 @@ require dirname(__DIR__).'/app/bootstrap.php';
 
 $branding=branding($db,$config);
 $lang=resolve_language($db,$config,null);
+start_html_i18n($lang);
 
 audit_event(
     $db,

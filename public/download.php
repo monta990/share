@@ -38,6 +38,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 function render_message(string $title,string $message):never{
     global $db,$config,$branding,$appUrl;
     $lang=resolve_language($db,$config,null);
+start_html_i18n($lang);
     $themeLabel=$lang==='en'?'Theme':'Tema';
     $lightLabel=$lang==='en'?'Light':'Claro';
     $darkLabel=$lang==='en'?'Dark':'Oscuro';

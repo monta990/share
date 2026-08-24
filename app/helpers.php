@@ -882,6 +882,20 @@ function get_share_template(PDO $db, string $language): string
     return $template !== '' ? $template : default_share_template_for_language($language);
 }
 
+function start_html_i18n(string $lang): void
+{
+    $lang = in_array($lang, ['en', 'es'], true) ? $lang : 'en';
+    ob_start(static function (string $buffer) use ($lang): string {
+        static $cache = [];
+        if (!isset($cache[$lang])) {
+            $file = dirname(__DIR__) . '/lang/' . $lang . '.php';
+            $data = is_file($file) ? require $file : [];
+            $cache[$lang] = is_array($data['literal'] ?? null) ? $data['literal'] : [];
+        }
+        return $cache[$lang] ? strtr($buffer, $cache[$lang]) : $buffer;
+    });
+}
+
 function t(string $key, string $lang = 'en'): string
 {
     static $cache = [];

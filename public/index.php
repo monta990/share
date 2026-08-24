@@ -6,6 +6,7 @@ cleanup_session_uploads($config);
 $branding=branding($db,$config);
 $defaultOneTime=((string)setting($db,'default_one_time','0')==='1');
 $pageLang=resolve_language($db,$config,null);
+start_html_i18n($pageLang);
 $L=[
 'upload_title'=>t('home.upload_title',$pageLang),'upload_subtitle'=>t('home.upload_subtitle',$pageLang),
 'select'=>t('home.select',$pageLang),'available'=>t('home.available',$pageLang),'hours'=>t('home.hours',$pageLang),

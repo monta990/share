@@ -12,6 +12,7 @@ $uiLanguage=resolve_language($db,$config,null);
 $activeTab=(string)($_GET['admin_tab']??($_POST['admin_tab']??'stats'));
 if(!in_array($activeTab,$allowedAdminTabs,true)) $activeTab='stats';
 $lang=app_language($db,$config);
+start_html_i18n($lang);
 if (admin_count($db) === 0) {
     $error='';
     if($_SERVER['REQUEST_METHOD']==='POST' && ($_POST['action']??'')==='setup'){
